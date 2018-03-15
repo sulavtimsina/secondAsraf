@@ -1,0 +1,110 @@
+{
+  "name": "astate/asraf",
+  "description": "ASRAF",
+  "keywords": [
+    "astate",
+    "laravel",
+    "asraf",
+    "bootstrap"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "A-State",
+      "email": "itswebteam@astate.edu"
+    },
+    {
+      "name": "Roshan Gautam",
+      "email": "rgautam@astate.edu",
+      "role": "Developer"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.astate.edu/repo/private/"
+    },
+    {
+      "url": "https://github.com/roshangautam/revisionable",
+      "type": "git"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "laravel/framework": "5.5.*",
+    "laravel/tinker": "^1.0",
+    "asraf/admin-default": "~3.1",
+    "asraf/frontend-default": "~3.1",
+
+    "asraf/kernel": "~3.1",
+    "asraf/installer": "~3.1",
+
+    "asraf/guardian": "~4.1",
+    "asraf/dashboard": "~4.1",
+    "asraf/menus": "~4.1",
+    "asraf/settings": "~4.1",
+    "asraf/themes": "~3.1",
+
+    "venturecraft/revisionable": "dev-shield",
+    "roshangautam/presenter": "^1.0",
+    "predis/predis": "^2.0@dev"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "~1.4",
+    "mockery/mockery": "0.9.*",
+    "phpunit/phpunit": "~6.0",
+    "barryvdh/laravel-debugbar": "~2.0",
+    "asraf/operations": "~4.1",
+    "filp/whoops": "~2.0"
+  },
+  "autoload": {
+    "classmap": [
+      "database"
+    ],
+    "psr-4": {
+      "App\\": "app/",
+      "Tests\\": "tests/"
+    }
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/TestCase.php"
+    ]
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "php artisan migrate",
+      "php artisan migrate --path=vendor/venturecraft/revisionable/src/migrations/ --force",
+      "php artisan clear-compiled",
+      "php artisan asraf:check-env-file",
+      "php artisan optimize",
+      "php artisan asraf:upgrade",
+      "php artisan theme:publish --extensions",
+      "php artisan vendor:publish --provider='Asraf\\Installer\\Laravel\\InstallerServiceProvider' --tag='assets'",
+      "php artisan theme:compile"
+    ],
+    "pre-update-cmd": [
+      "php artisan clear-compiled"
+    ],
+    "post-update-cmd": [
+      "php artisan asraf:check-env-file",
+      "php artisan optimize",
+      "php artisan asraf:upgrade",
+      "php artisan theme:publish --extensions",
+      "php artisan vendor:publish --provider='Asraf\\Installer\\Laravel\\InstallerServiceProvider' --tag='assets'",
+      "php artisan theme:compile"
+    ],
+    "post-autoload-dump": [
+        "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+        "@php artisan package:discover"
+    ]
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "extra": {
+    "component": "application"
+  }
+}

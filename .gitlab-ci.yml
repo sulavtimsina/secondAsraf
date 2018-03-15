@@ -1,0 +1,38 @@
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/php
+image: php:latest
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-service
+variables:
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+cache:
+  paths:
+  - vendor/
+# This is a basic example for a gem or script which doesn't use
+# services such as redis or postgres
+before_script:
+  # Update packages
+  - apt-get update -yqq
+  # Install dependencies
+  - apt-get install git libcurl4-gnutls-dev libicu-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
+  # Install php extensions
+  - docker-php-ext-install mbstring mcrypt  json intl gd xml zip bz2 opcache
+  # Install Composer and project dependencies.
+  - curl -sS https://getcomposer.org/installer | php
+  - php composer.phar install
+  # # Copy over testing configuration.
+  # - cp .env.example .env
+  # # Generate an application key. Re-cache.
+  # - php artisan key:generate
+  # - php artisan config:cache
+  # # Run database migrations.
+  # - php artisan migrate
+  # # Run database seed
+  # - php artisan db:seed
+  # - php artisan asraf:install
+test:
+  script:
+  # run laravel tests
+  - php vendor/bin/phpunit --coverage-text --colors=never
